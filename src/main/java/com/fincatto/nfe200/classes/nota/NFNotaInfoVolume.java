@@ -13,7 +13,7 @@ import com.fincatto.nfe200.validadores.ListValidador;
 import com.fincatto.nfe200.validadores.StringValidador;
 
 public class NFNotaInfoVolume extends NFBase {
-    @Element(name = "qVol", required = true)
+    @Element(name = "qVol", required = false)
     private BigInteger quantidadeVolumesTransportados;
 
     @Element(name = "esp", required = false)
@@ -64,5 +64,33 @@ public class NFNotaInfoVolume extends NFBase {
     public void setLacres(final List<NFNotaInfoLacre> lacres) {
         ListValidador.tamanho5000(lacres);
         this.lacres = lacres;
+    }
+
+    public BigInteger getQuantidadeVolumesTransportados() {
+        return this.quantidadeVolumesTransportados;
+    }
+
+    public String getEspecieVolumesTransportados() {
+        return this.especieVolumesTransportados;
+    }
+
+    public String getMarca() {
+        return this.marca;
+    }
+
+    public String getNumeracaoVolumesTransportados() {
+        return this.numeracaoVolumesTransportados;
+    }
+
+    public String getPesoLiquido() {
+        return this.pesoLiquido;
+    }
+
+    public String getPesoBruto() {
+        return this.pesoBruto;
+    }
+
+    public List<NFNotaInfoLacre> getLacres() {
+        return this.lacres;
     }
 }

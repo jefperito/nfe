@@ -14,14 +14,14 @@ import com.fincatto.nfe200.NFEConfig;
 import com.fincatto.nfe200.classes.NFAutorizador;
 import com.fincatto.nfe200.classes.nota.consulta.NFNotaConsulta;
 import com.fincatto.nfe200.classes.nota.consulta.NFNotaConsultaRetorno;
+import com.fincatto.nfe200.parsers.NotaFiscalChaveParser;
 import com.fincatto.nfe200.transformers.NFRegistryMatcher;
 import com.fincatto.nfe200.webservices.gerado.NfeConsulta2Stub;
 import com.fincatto.nfe200.webservices.gerado.NfeConsulta2Stub.NfeConsultaNF2Result;
-import com.fincatto.nfe310.parsers.NotaFiscalChaveParser;
 
 class WSNotaConsulta {
     private final NFEConfig config;
-    private final static Logger log = Logger.getLogger(WSNotaConsulta.class);
+    private static final Logger LOG = Logger.getLogger(WSNotaConsulta.class);
 
     public WSNotaConsulta(final NFEConfig config) {
         this.config = config;
@@ -29,10 +29,10 @@ class WSNotaConsulta {
 
     public NFNotaConsultaRetorno consultaNota(final String chaveDeAcesso) throws Exception {
         final OMElement omElementConsulta = AXIOMUtil.stringToOM(this.gerarDadosConsulta(chaveDeAcesso).toString());
-        WSNotaConsulta.log.info(omElementConsulta);
+        WSNotaConsulta.LOG.info(omElementConsulta);
 
         final OMElement omElementRetorno = this.efetuaConsulta(omElementConsulta, new NotaFiscalChaveParser(chaveDeAcesso));
-        WSNotaConsulta.log.info(omElementRetorno);
+        WSNotaConsulta.LOG.info(omElementRetorno);
         return new Persister(new NFRegistryMatcher(), new Format(0)).read(NFNotaConsultaRetorno.class, omElementRetorno.toString());
     }
 
@@ -46,7 +46,7 @@ class WSNotaConsulta {
 
         final NfeConsulta2Stub.NfeDadosMsg dados = new NfeConsulta2Stub.NfeDadosMsg();
         dados.setExtraElement(omElementConsulta);
-        final NfeConsultaNF2Result consultaNF2Result = new NfeConsulta2Stub(NFAutorizador.valueOfCodigoUF(this.config.getCUF()).getNfeConsultaProtocolo(this.config.getAmbiente())).nfeConsultaNF2(dados, cabecE);
+        final NfeConsultaNF2Result consultaNF2Result = new NfeConsulta2Stub(NFAutorizador.valueOfCodigoUF(notaFiscalChaveParser.getNFUnidadeFederativa()).getNfeConsultaProtocolo(this.config.getAmbiente())).nfeConsultaNF2(dados, cabecE);
         return consultaNF2Result.getExtraElement();
     }
 
